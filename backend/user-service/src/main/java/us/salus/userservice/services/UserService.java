@@ -184,4 +184,9 @@ public class UserService {
                 })
                 .orElse(null);
     }
+    public List<User.HistoricalMeal> getUserMealsById(long id) {
+        return userRepository.findById(id)
+                .map(User::getHistoricalMeals)
+                .orElse(null);
+    }
 }

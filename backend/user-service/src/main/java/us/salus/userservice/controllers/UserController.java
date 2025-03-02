@@ -92,6 +92,12 @@ public class UserController {
         return conversations != null ? ResponseEntity.ok(conversations) : ResponseEntity.notFound().build();
     }
 
+    @GetMapping("/id/{id}/meals")
+    public ResponseEntity<List<User.HistoricalMeal>> getUserMealsById(@PathVariable long id) {
+        List<User.HistoricalMeal> meals = userService.getUserMealsById(id);
+        return meals != null ? ResponseEntity.ok(meals) : ResponseEntity.notFound().build();
+    }
+
     @PostMapping("/id/{id}/conversations")
     public ResponseEntity<User.ConversationEntry> addConversationEntry(
             @PathVariable long id,
