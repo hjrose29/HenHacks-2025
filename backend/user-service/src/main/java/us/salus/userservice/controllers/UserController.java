@@ -42,6 +42,7 @@ public class UserController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+
     @GetMapping("/id/{id}")
     public ResponseEntity<User> getUserById(@PathVariable long id) {
         Optional<User> user = userService.getUserById(id);
@@ -73,6 +74,31 @@ public class UserController {
     public ResponseEntity<List<User.ConversationEntry>> getConversationHistory(@PathVariable String name) {
         List<User.ConversationEntry> conversations = userService.getConversationHistory(name);
         return conversations != null ? ResponseEntity.ok(conversations) : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/id/{id}/conversations")
+    public ResponseEntity<List<User.ConversationEntry>> getConversationHistory(@PathVariable long id) {
+        List<User.ConversationEntry> conversations = userService.getConversationHistoryById(id);
+        return conversations != null ? ResponseEntity.ok(conversations) : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/id/{id}/conversations/range")
+    public ResponseEntity<List<User.ConversationEntry>> getConversationHistoryBetweenDates(
+            @PathVariable long id,
+            @RequestParam ZonedDateTime startDate,
+            @RequestParam ZonedDateTime endDate) {
+        List<User.ConversationEntry> conversations = userService.getConversationHistoryBetweenDatesById(id, startDate,
+                endDate);
+        return conversations != null ? ResponseEntity.ok(conversations) : ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/id/{id}/conversations")
+    public ResponseEntity<User.ConversationEntry> addConversationEntry(
+            @PathVariable long id,
+            @RequestBody User.ConversationEntry conversationEntry) {
+        User.ConversationEntry addedEntry = userService.addConversationEntryById(id, conversationEntry);
+        return addedEntry != null ? ResponseEntity.status(HttpStatus.CREATED).body(addedEntry)
+                : ResponseEntity.notFound().build();
     }
 
     @GetMapping("/{name}/conversations/range")
@@ -118,6 +144,30 @@ public class UserController {
             @PathVariable String name,
             @RequestBody User.HistoricalMeal meal) {
         User updatedUser = userService.addHistoricalMeal(name, meal);
+        return updatedUser != null ? ResponseEntity.ok(updatedUser) : ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/id/{id}/activities")
+    public ResponseEntity<User> addHistoricalActivity(
+            @PathVariable long id,
+            @RequestBody User.HistoricalActivity activity) {
+        User updatedUser = userService.addHistoricalActivityById(id, activity);
+        return updatedUser != null ? ResponseEntity.ok(updatedUser) : ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/id/{id}/calories")
+    public ResponseEntity<User> addHistoricalCalories(
+            @PathVariable long id,
+            @RequestBody User.HistoricalCalories calories) {
+        User updatedUser = userService.addHistoricalCaloriesById(id, calories);
+        return updatedUser != null ? ResponseEntity.ok(updatedUser) : ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/id/{id}/meals")
+    public ResponseEntity<User> addHistoricalMeal(
+            @PathVariable long id,
+            @RequestBody User.HistoricalMeal meal) {
+        User updatedUser = userService.addHistoricalMealById(id, meal);
         return updatedUser != null ? ResponseEntity.ok(updatedUser) : ResponseEntity.notFound().build();
     }
 
