@@ -91,22 +91,22 @@ func main() {
 	
 	// Define endpoints
 	r := mux.NewRouter()
-
+	router := corsMiddleware(r)
     // Define endpoints
     r.HandleFunc("/meal-plan", func(w http.ResponseWriter, r *http.Request) {
         mealPlanEndpoint(w, r, model, ctx)
-    }).Methods("GET", "POST")
+    }).Methods("GET", "POST", "OPTIONS")
 
     r.HandleFunc("/workout-plan", func(w http.ResponseWriter, r *http.Request) {
         workoutPlanEndpoint(w, r, model, ctx)
-    }).Methods("GET", "POST")
+    }).Methods("GET", "POST", "OPTIONS")
 
 	r.Use(corsMiddleware)
 	
 	// Start the server
 	port := ":8080"
 	fmt.Printf("Server started at %s\n", port)
-	log.Fatal(http.ListenAndServe(port, r))
+	log.Fatal(http.ListenAndServe(port, router))
 }
 
 
@@ -330,14 +330,13 @@ func validateAgainstSchema(schemaContent string, jsonStr string) (bool, error) {
 // corsMiddleware adds CORS headers to the response
 func corsMiddleware(next http.Handler) http.Handler {
     return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        // Allow requests from localhost:3000
         w.Header().Set("Access-Control-Allow-Origin", "*")
         w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-        w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+        w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
         w.Header().Set("Access-Control-Allow-Credentials", "true")
 
-        // Handle preflight OPTIONS request
         if r.Method == http.MethodOptions {
+            w.WriteHeader(http.StatusOK)
             return
         }
 

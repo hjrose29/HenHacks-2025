@@ -1,6 +1,5 @@
 <script lang="ts">
-	import fav from '$lib/icons/fav.svg';
-	import strava from '$lib/icons/strava.svg';
+	import Logo from '$lib/Components/Logo.svelte';
 	import { env } from '$env/dynamic/public';
 	import { PUBLIC_USER_SERVICE_URL } from '$env/static/public';
 
@@ -14,9 +13,7 @@
 		<div class="space-y-8 rounded-xl bg-white p-8 shadow-lg">
 			<!-- Logo and Header -->
 			<div class="space-y-2 text-center">
-				<div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#F9DFC5]">
-					<img src={fav} />
-				</div>
+				<Logo />
 				<h1 class="text-2xl font-bold text-[#2d1e5f]">Welcome</h1>
 				<p class="text-gray-500">Sign in to continue to your dashboard</p>
 			</div>
@@ -28,7 +25,7 @@
 				class="flex w-full items-center justify-center gap-3 rounded-lg bg-[#FC4C02] px-4 py-3 font-medium text-white transition-colors duration-200 hover:bg-[#e64500]"
 			>
 				<!-- Strava Logo -->
-				<img src={strava} />
+				<img src="icons/strava.svg" />
 				Connect with Strava
 			</a>
 

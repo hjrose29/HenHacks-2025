@@ -31,7 +31,7 @@
 			const response = await fetch(
 				`${PUBLIC_NUTRITION_SERVICE_URL}/search?query=${encodeURIComponent(searchQuery)}`
 			);
-			console.log(response);
+			console.log(response.json());
 
 			if (!response.ok) {
 				throw new Error(`Search failed with status: ${response.status}`);
@@ -101,6 +101,8 @@
 		};
 
 		console.log('Submitting food data:', foodData);
+
+		let request = fetch('');
 
 		setTimeout(() => {
 			isSubmitting = false;
