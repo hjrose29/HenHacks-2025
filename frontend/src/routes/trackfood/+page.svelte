@@ -31,13 +31,13 @@
 			const response = await fetch(
 				`${PUBLIC_NUTRITION_SERVICE_URL}/search?query=${encodeURIComponent(searchQuery)}`
 			);
-			console.log(response.json());
 
 			if (!response.ok) {
 				throw new Error(`Search failed with status: ${response.status}`);
 			}
 
 			const data = await response.json();
+			console.log(data);
 
 			const firstFoodItem = data.foods.food[0];
 

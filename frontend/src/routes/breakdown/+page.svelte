@@ -3,41 +3,6 @@
 	import ProgressRing from '$lib/Components/ProgressRing.svelte';
 
 	// Types for our data
-	type Nutrient = {
-		current: number;
-		goal: number;
-	};
-
-	type Meal = {
-		id: string;
-		name: string;
-		time: string;
-		calories: number;
-		protein: number;
-		carbs: number;
-		fat: number;
-	};
-
-	type Workout = {
-		id: string;
-		type: string;
-		duration: number;
-		caloriesBurned: number;
-		date: string;
-	};
-
-	type DailyStats = {
-		calories: Nutrient;
-		protein: Nutrient;
-		carbs: Nutrient;
-		fat: Nutrient;
-	};
-
-	type UserData = {
-		dailyStats: DailyStats;
-		meals: Meal[];
-		recentWorkouts: Workout[];
-	};
 
 	// Mock data (replace with actual data fetching in a real app)
 	let userData: UserData = {
@@ -48,9 +13,33 @@
 			fat: { current: 50, goal: 65 }
 		},
 		meals: [
-			{ id: '1', name: 'Breakfast', time: '08:00', calories: 400, protein: 20, carbs: 50, fat: 15 },
-			{ id: '2', name: 'Lunch', time: '13:00', calories: 600, protein: 30, carbs: 70, fat: 20 },
-			{ id: '3', name: 'Dinner', time: '19:00', calories: 500, protein: 25, carbs: 30, fat: 15 }
+			{
+				id: '1',
+				name: 'Sausege, Egg and Cheese',
+				time: '08:00AM',
+				calories: 400,
+				protein: 20,
+				carbs: 50,
+				fat: 15
+			},
+			{
+				id: '2',
+				name: 'Deli Sandwhich',
+				time: '1:00PM',
+				calories: 600,
+				protein: 30,
+				carbs: 70,
+				fat: 20
+			},
+			{
+				id: '3',
+				name: 'Mc Donalds',
+				time: '7:00pm',
+				calories: 1009,
+				protein: 3,
+				carbs: 30,
+				fat: 15
+			}
 		],
 		recentWorkouts: [
 			{ id: '1', type: 'Running', duration: 30, caloriesBurned: 300, date: '2025-03-01' },

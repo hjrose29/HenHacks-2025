@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { env } from '$env/dynamic/public';
+	import { PUBLIC_GEMINI_SERVICE_URL, PUBLIC_USER_SERVICE_URL } from '$env/static/public';
 
 	// Define types based on your provided data structure
 	type Exercise = {
@@ -61,23 +63,34 @@
 		error = null;
 
 		try {
-			// For development, use the sample data
-			// In production, uncomment the fetch call and replace with your API endpoint
+			console.log('getting workoutplan');
 
-			// const response = await fetch('https://your-api-endpoint.com/workout');
-			// if (!response.ok) {
-			//   throw new Error(`Error: ${response.status}`);
-			// }
-			// workout = await response.json();
+			// Change to POST method since you're sending a body
+			const request = await fetch(
+				`${PUBLIC_GEMINI_SERVICE_URL}/workout-plan?prompt="uniqueworkout"`,
+				{
+					method: 'GET', // Changed from GET to POST
+					headers: { 'Content-Type': 'application/json' }
+				}
+			);
 
-			// Using sample data for now
-			workout = sampleWorkout;
+			// Check if the request was successful before parsing JSON
+			if (!request.ok) {
+				throw new Error(`Error: ${request.status}`);
+			}
 
-			// Simulate API delay for demo purposes
-			await new Promise((resolve) => setTimeout(resolve, 800));
+			// Parse JSON after checking request.ok
+			let response = await request.json();
+
+			workout = response;
+			console.log(workout);
 		} catch (err) {
 			error = err instanceof Error ? err.message : 'Failed to fetch workout';
 			console.error(error);
+
+			// For development only - fallback to sample data on error
+			// Remove this in production
+			workout = sampleWorkout;
 		} finally {
 			isLoading = false;
 		}
@@ -100,6 +113,7 @@
 	onMount(() => {
 		fetchWorkout();
 	});
+	export let data: { user: User };
 </script>
 
 <div class="min-h-screen bg-[#F5EFE7] p-4 pb-12 text-[#000000CC]">
