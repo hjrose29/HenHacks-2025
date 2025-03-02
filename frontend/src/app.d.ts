@@ -7,6 +7,41 @@ declare global {
 		weight: number
 		height: number
 	}
+	type Nutrient = {
+		current: number;
+		goal: number;
+	};
+
+	type Meal = {
+		id: string;
+		name: string;
+		time: string;
+		calories: number;
+		protein: number;
+		carbs: number;
+		fat: number;
+	};
+
+	type Workout = {
+		id: string;
+		type: string;
+		duration: number;
+		caloriesBurned: number;
+		date: string;
+	};
+
+	type DailyStats = {
+		calories: Nutrient;
+		protein: Nutrient;
+		carbs: Nutrient;
+		fat: Nutrient;
+	};
+
+	type UserData = {
+		dailyStats: DailyStats;
+		meals: Meal[];
+		recentWorkouts: Workout[];
+	};
 
 	namespace App {
 		// interface Error {}
@@ -16,6 +51,7 @@ declare global {
 		// interface PageData {}
 		// interface PageState {}
 		// interface Platform {}
+
 	}
 }
 
