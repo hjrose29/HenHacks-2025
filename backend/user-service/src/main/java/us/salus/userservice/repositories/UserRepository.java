@@ -12,6 +12,8 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends MongoRepository<User, String> {
 
+    Optional<User> findById(long id);
+
     Optional<User> findByName(String name);
 
     // Query to find users who have logged activities in a date range
