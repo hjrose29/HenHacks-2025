@@ -1,0 +1,36 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "meals": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "meal_type": {
+              "type": "string",
+              "enum": ["Breakfast", "Lunch", "Dinner", "Snack"]
+            },
+            "name": { "type": "string" },
+            "calories": { "type": "integer" },
+            "macros": {
+              "type": "object",
+              "properties": {
+                "carbs": { "type": "integer" },
+                "protein": { "type": "integer" },
+                "fat": { "type": "integer" }
+              },
+              "required": ["carbs", "protein", "fat"]
+            },
+            "ingredients": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          },
+          "required": ["meal_type", "name", "calories", "macros", "ingredients"]
+        }
+      }
+    },
+    "required": ["meals"]
+  }
+  
