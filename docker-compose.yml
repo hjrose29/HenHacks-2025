@@ -1,0 +1,36 @@
+name: salus
+
+services:
+  # frontend:
+  #   build: ./frontend
+  #   env_file: .env
+  #   environment:
+  #     PUBLIC_USER_SERVICE_URL: http://user-service:8080
+  #   ports:
+  #     - 3000:3000
+  user-service:
+    build: ./backend/user-service
+    env_file: .env
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/test
+    ports:
+      - 8081:8080
+  nutrition-api:
+    build: ./backend/Nutrition API
+    env_file: .env
+    ports:
+      - 8082:8080
+  gemini:
+    build: ./gemini
+    env_file: .env
+    ports:
+      - 8080:8080
+  mongo:
+    image: mongo
+    volumes:
+      - salus_db:/data/db
+    ports:
+      - 27017:27017
+
+volumes:
+  salus_db:
