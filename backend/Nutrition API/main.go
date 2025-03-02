@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 )
 
 // Config holds the API credentials
@@ -186,7 +187,23 @@ func main() {
 	client := NewAPIClient(config)
 	server := NewServer(client)
 
-	// Start the server
+	// Get frontend URL from environment
+	frontendURL := os.Getenv("FRONTEND_URL")
+	if frontendURL == "" {
+		log.Println("Warning: FRONTEND_URL not set, using default CORS configuration")
+	}
+
+	// Setup CORS middleware
+	corsMiddleware := cors.New(cors.Options{
+		AllowedOrigins:   []string{frontendURL},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Content-Type", "Authorization"},
+		AllowCredentials: true,
+		// Optional: Enable Debugging for testing, consider disabling in production
+		Debug: false,
+	})
+
+	// Start the server with CORS middleware
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
@@ -194,5 +211,6 @@ func main() {
 
 	addr := fmt.Sprintf(":%s", port)
 	log.Printf("Server starting on %s", addr)
-	log.Fatal(http.ListenAndServe(addr, server.router))
+	log.Printf("CORS enabled for origin: %s", frontendURL)
+	log.Fatal(http.ListenAndServe(addr, corsMiddleware.Handler(server.router)))
 }

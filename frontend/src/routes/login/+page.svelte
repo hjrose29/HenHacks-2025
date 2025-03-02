@@ -1,6 +1,8 @@
 <script lang="ts">
 	import fav from '$lib/icons/fav.svg';
 	import strava from '$lib/icons/strava.svg';
+	import { env } from '$env/dynamic/public';
+	import { PUBLIC_USER_SERVICE_URL } from '$env/static/public';
 
 	function login() {
 		console.log('Attempting to login');
@@ -20,14 +22,15 @@
 			</div>
 
 			<!-- Strava Login Button -->
-			<button
+			<a
+				href="{PUBLIC_USER_SERVICE_URL}/auth/login"
 				on:click={login}
 				class="flex w-full items-center justify-center gap-3 rounded-lg bg-[#FC4C02] px-4 py-3 font-medium text-white transition-colors duration-200 hover:bg-[#e64500]"
 			>
 				<!-- Strava Logo -->
 				<img src={strava} />
 				Connect with Strava
-			</button>
+			</a>
 
 			<!-- Additional Info -->
 		</div>

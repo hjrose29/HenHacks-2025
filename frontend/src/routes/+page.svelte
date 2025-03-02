@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import Logo from '$lib/Components/Logo.svelte';
-
+	import { env } from '$env/dynamic/public';
+	import { PUBLIC_GEMINI_SERVICE_URL } from '$env/static/public';
 	// User data (in a real app, this would come from your auth/user service)
 	let userName = 'Alex';
 	let timeOfDay = '';
@@ -18,8 +19,13 @@
 	});
 
 	// Handle chat submission
-	function handleChatSubmit() {
-		if (!chatMessage.trim()) return;
+	async function handleChatSubmit(msg: string) {
+		const request = await fetch(`${PUBLIC_GEMINI_SERVICE_URL}/workout-plan`, {
+			method: 'POST',
+			body: JSON.stringify(data.user)
+		});
+		const response = await request.json();
+		console.log(response);
 
 		// Add user message to chat
 		chatHistory = [...chatHistory, { sender: 'user', message: chatMessage }];
@@ -40,13 +46,15 @@
 		chatMessage = '';
 		chatInputRef.focus();
 	}
+
+	export let data: { user: User };
 </script>
 
 <main class="flex min-h-screen flex-col bg-[#F5EFE7] p-4 text-[#000000CC]">
 	<Logo></Logo>
 	<!-- Greeting Header -->
 	<header class="mb-6 mt-8 text-center">
-		<h1 class="text-2xl font-bold">Good {timeOfDay}, {userName}!</h1>
+		<h1 class="text-2xl font-bold">Good {timeOfDay}, {data.user.name}!</h1>
 		<p class="mt-1 text-sm">Track your wellness journey with AI assistance</p>
 	</header>
 
