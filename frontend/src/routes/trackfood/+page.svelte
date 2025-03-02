@@ -52,10 +52,13 @@
 				throw new Error('Failed to parse nutrition data.');
 			}
 
-			const [, calories, fat, carbs, protein] = nutritionMatch;
+			const [, calories, fat, carbs, proteins] = nutritionMatch;
 
 			console.log(calories, fat, carbs, protein);
 			foodName = firstFoodItem.food_name;
+			grains = carbs;
+			fats = fat;
+			protein = proteins;
 
 			searchSuccess = true;
 

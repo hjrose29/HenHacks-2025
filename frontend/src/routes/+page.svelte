@@ -3,6 +3,7 @@
 	import Logo from '$lib/Components/Logo.svelte';
 	import { env } from '$env/dynamic/public';
 	import { PUBLIC_GEMINI_SERVICE_URL } from '$env/static/public';
+	import { json } from '@sveltejs/kit';
 	// User data (in a real app, this would come from your auth/user service)
 	let userName = 'Alex';
 	let timeOfDay = '';
@@ -20,8 +21,12 @@
 
 	// Handle chat submission
 	async function handleChatSubmit(msg: string) {
+		const jsonbody = JSON.stringify(data.user);
+		console.log(jsonbody);
+
 		const request = await fetch(`${PUBLIC_GEMINI_SERVICE_URL}/workout-plan`, {
 			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(data.user)
 		});
 		const response = await request.json();
