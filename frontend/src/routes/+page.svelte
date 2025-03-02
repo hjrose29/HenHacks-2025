@@ -137,7 +137,8 @@
 
 	<!-- Action Buttons -->
 	<section class="mb-8 grid grid-cols-2 gap-4">
-		<button
+		<a
+			href="/breakdown"
 			class="flex flex-col items-center justify-center rounded-lg bg-white p-4 text-[#000000CC] shadow-sm transition-shadow hover:shadow-md"
 		>
 			<svg
@@ -157,7 +158,7 @@
 			</svg>
 			<span class="font-medium">Your Breakdown</span>
 			<span class="mt-1 text-xs">View progress & stats</span>
-		</button>
+		</a>
 
 		<a
 			href="/trackfood"

@@ -195,12 +195,13 @@ func main() {
 
 	// Setup CORS middleware
 	corsMiddleware := cors.New(cors.Options{
-		AllowedOrigins:   []string{frontendURL},
+		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowedHeaders:   []string{"Content-Type", "Authorization"},
+		AllowedHeaders:   []string{"*"},
 		AllowCredentials: true,
 		// Optional: Enable Debugging for testing, consider disabling in production
-		Debug: false,
+		OptionsPassthrough: true,
+		Debug:              true,
 	})
 
 	// Start the server with CORS middleware

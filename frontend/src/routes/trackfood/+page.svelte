@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { redirect } from '@sveltejs/kit';
 	import { onMount } from 'svelte';
+	import { env } from '$env/dynamic/public';
+	import { PUBLIC_NUTRITION_SERVICE_URL } from '$env/static/public';
 
 	// Food data
 	let searchQuery = '';
@@ -27,8 +29,9 @@
 
 		try {
 			const response = await fetch(
-				`http://localhost:42070/search?q=${encodeURIComponent(searchQuery)}`
+				`${PUBLIC_NUTRITION_SERVICE_URL}/search?query=${encodeURIComponent(searchQuery)}`
 			);
+			console.log(response);
 
 			if (!response.ok) {
 				throw new Error(`Search failed with status: ${response.status}`);
@@ -36,11 +39,25 @@
 
 			const data = await response.json();
 
-			// Populate the form with the returned data
-			foodName = data.name || '';
-			protein = data.protein?.toString() || '';
-			grains = data.grains?.toString() || '';
-			fats = data.fats?.toString() || '';
+			const firstFoodItem = data.foods.food[0];
+
+			if (!firstFoodItem) {
+				throw new Error('No results found.');
+			}
+
+			const nutritionMatch = firstFoodItem.food_description.match(
+				/Calories:\s*([\d.]+)kcal\s*\|\s*Fat:\s*([\d.]+)g\s*\|\s*Carbs:\s*([\d.]+)g\s*\|\s*Protein:\s*([\d.]+)g/
+			);
+			if (!nutritionMatch) {
+				throw new Error('Failed to parse nutrition data.');
+			}
+
+			const [, calories, fat, carbs, protein] = nutritionMatch;
+
+			console.log(calories, fat, carbs, protein);
+			foodName = firstFoodItem.food_name;
+
+			searchSuccess = true;
 
 			searchSuccess = true;
 
