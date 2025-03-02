@@ -4,7 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+
 import us.salus.userservice.models.User;
+import us.salus.userservice.services.JWTService;
 import us.salus.userservice.services.UserService;
 
 import java.time.ZonedDateTime;
@@ -16,10 +21,12 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
+    private final JWTService jwtService;
 
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
+        this.jwtService = new JWTService();
     }
 
     // Basic CRUD endpoints
@@ -73,7 +80,8 @@ public class UserController {
             @PathVariable String name,
             @RequestParam ZonedDateTime startDate,
             @RequestParam ZonedDateTime endDate) {
-        List<User.ConversationEntry> conversations = userService.getConversationHistoryBetweenDates(name, startDate, endDate);
+        List<User.ConversationEntry> conversations = userService.getConversationHistoryBetweenDates(name, startDate,
+                endDate);
         return conversations != null ? ResponseEntity.ok(conversations) : ResponseEntity.notFound().build();
     }
 
@@ -82,9 +90,8 @@ public class UserController {
             @PathVariable String name,
             @RequestBody User.ConversationEntry conversationEntry) {
         User.ConversationEntry addedEntry = userService.addConversationEntry(name, conversationEntry);
-        return addedEntry != null ?
-                ResponseEntity.status(HttpStatus.CREATED).body(addedEntry) :
-                ResponseEntity.notFound().build();
+        return addedEntry != null ? ResponseEntity.status(HttpStatus.CREATED).body(addedEntry)
+                : ResponseEntity.notFound().build();
     }
 
     // Activity endpoints
@@ -112,5 +119,24 @@ public class UserController {
             @RequestBody User.HistoricalMeal meal) {
         User updatedUser = userService.addHistoricalMeal(name, meal);
         return updatedUser != null ? ResponseEntity.ok(updatedUser) : ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<User> getMe(@CookieValue(value = "salus_session") String jwtCookie) {
+        DecodedJWT jwt;
+        try {
+            jwt = jwtService.verifyJWT(jwtCookie);
+        } catch (JWTVerificationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Long userId = jwt.getClaim("user_id").asLong();
+
+        Optional<User> oUser = userService.getUserById(userId);
+        if (oUser.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        return ResponseEntity.ok(oUser.get());
     }
 }

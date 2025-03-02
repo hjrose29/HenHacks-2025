@@ -1,0 +1,19 @@
+Generate a meal plan in valid JSON format.
+	Follow this JSON structure precisely:
+	{
+		"meals": [
+			{
+				"meal_type": str
+				"name": str,
+                "description": str,
+				"calories": int,
+				"macros": {"carbs": int, "protein": int, "fat": int},
+				"ingredients": [str, str, str, ...]
+			}
+		]
+	}
+	
+	IMPORTANT: Return ONLY the JSON object with no additional text before or after.
+    description field must be a succint description of the meal and give reasoning as to why you are suggesting this.
+	Ensure all numbers are integers, not floating points.
+	All meal types must be one of: "Breakfast", "Lunch", "Dinner", or "Snack".

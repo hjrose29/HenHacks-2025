@@ -1,0 +1,22 @@
+
+Generate a workout plan in valid JSON format based on the above history
+	Follow this JSON structure precisely:
+	{
+		"workout_type": str,
+		"duration_minutes": int,
+		"description": str,
+		"exercises": [
+			{"name": "", "reps":  "sets": },
+			{"name": "", "reps":  "sets": },
+			{"name": "", "reps":  "sets": },
+			{"name": "", "reps":  "sets": }
+		]
+	}
+	
+	IMPORTANT: Return ONLY the JSON object with no additional text before or after.
+	REQUIRED: description field must be a succint description of the workout and give reasoning as to why you are suggesting this.
+	Ensure all numbers are integers, not floating points.
+	The workout_type must be one of: "Strength", "Cardio", "Flexibility", or "Mixed".
+	Duration must be at least 10 minutes.
+	Include at least 3 different exercises with appropriate reps and sets.
+    

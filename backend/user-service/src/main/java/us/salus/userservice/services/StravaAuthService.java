@@ -8,9 +8,9 @@ import us.salus.userservice.models.TokenResponse;
 
 @Service
 public class StravaAuthService {
-  private final static RestClient restClient = RestClient.builder().build();
-
   public static TokenResponse getToken(String code) {
+    RestClient restClient = RestClient.builder().build();
+
     return restClient
         .post()
         .uri("https://www.strava.com/oauth/token")
