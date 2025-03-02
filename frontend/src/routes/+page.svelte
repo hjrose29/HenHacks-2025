@@ -151,7 +151,8 @@
 			<span class="mt-1 text-xs">View progress & stats</span>
 		</button>
 
-		<button
+		<a
+			href="/trackfood"
 			class="flex flex-col items-center justify-center rounded-lg bg-white p-4 text-[#000000CC] shadow-sm transition-shadow hover:shadow-md"
 		>
 			<svg
@@ -174,12 +175,11 @@
 			</svg>
 			<span class="font-medium">Add Food</span>
 			<span class="mt-1 text-xs">Log your meals</span>
-		</button>
+		</a>
 	</section>
 </main>
 
 <style>
-	/* Custom scrollbar for chat history */
 	:global(*::-webkit-scrollbar) {
 		width: 6px;
 	}
