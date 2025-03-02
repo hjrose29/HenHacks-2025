@@ -12,11 +12,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import us.salus.userservice.models.Athlete;
 import us.salus.userservice.models.QueryParams;
 import us.salus.userservice.models.TokenResponse;
 import us.salus.userservice.models.User;
 import us.salus.userservice.repositories.UserRepository;
+import us.salus.userservice.services.JWTService;
 import us.salus.userservice.services.StravaAuthService;
 import us.salus.userservice.services.StravaService;
 
@@ -25,10 +27,12 @@ import us.salus.userservice.services.StravaService;
 public class AuthController {
 
   private final UserRepository userRepository;
+  private final JWTService jwtService;
 
   @Autowired
   public AuthController(UserRepository userRepository) {
     this.userRepository = userRepository;
+    this.jwtService = new JWTService();
   }
 
   @GetMapping("/login")
@@ -44,7 +48,8 @@ public class AuthController {
   }
 
   @GetMapping("/callback")
-  public ResponseEntity<TokenResponse> callback(@RequestParam(value = "code") String code) {
+  public ResponseEntity<TokenResponse> callback(@RequestParam(value = "code") String code,
+      HttpServletResponse response) {
     TokenResponse token = StravaAuthService.getToken(code);
     Athlete athlete = StravaService.getAthlete(token.getAccess_token());
 
@@ -63,24 +68,22 @@ public class AuthController {
     } else {
       user = oUser.get();
       user.setToken(token);
-      userRepository.insert(user);
+      userRepository.save(user);
     }
 
     // Create cookie to store JWT
-    Cookie cookie = new Cookie("salus_session", "");
-
+    Cookie cookie = new Cookie("salus_session", jwtService.createJWT(user));
     cookie.setMaxAge(60 * 60 * 24 * 7);
     cookie.setSecure(true);
     cookie.setHttpOnly(true);
     cookie.setPath("/");
-    cookie.setDomain(System.getenv("FRONTEND_URL"));
+    response.addCookie(cookie);
 
     // Redirect back to frontend with cookie
-    // URI redirect = URI.create(System.getenv("FRONTEND_URL"));
-    // return
-    // ResponseEntity.status(HttpStatus.FOUND).location(redirect).header("Set-Cookie",
-    // cookie.toString()).build();
-
-    return ResponseEntity.ok(token);
+    URI redirect = URI.create(System.getenv("FRONTEND_URL"));
+    return ResponseEntity
+        .status(HttpStatus.FOUND)
+        .location(redirect)
+        .build();
   }
 }
