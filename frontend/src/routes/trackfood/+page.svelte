@@ -31,7 +31,7 @@
 			const response = await fetch(
 				`${PUBLIC_NUTRITION_SERVICE_URL}/search?query=${encodeURIComponent(searchQuery)}`
 			);
-			console.log(response);
+			console.log(response.json());
 
 			if (!response.ok) {
 				throw new Error(`Search failed with status: ${response.status}`);
@@ -52,10 +52,13 @@
 				throw new Error('Failed to parse nutrition data.');
 			}
 
-			const [, calories, fat, carbs, protein] = nutritionMatch;
+			const [, calories, fat, carbs, proteins] = nutritionMatch;
 
 			console.log(calories, fat, carbs, protein);
 			foodName = firstFoodItem.food_name;
+			grains = carbs;
+			fats = fat;
+			protein = proteins;
 
 			searchSuccess = true;
 
@@ -98,6 +101,8 @@
 		};
 
 		console.log('Submitting food data:', foodData);
+
+		let request = fetch('');
 
 		setTimeout(() => {
 			isSubmitting = false;
