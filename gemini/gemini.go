@@ -102,6 +102,8 @@ func main() {
 	log.Fatal(http.ListenAndServe(port, nil))
 }
 
+
+
 // Endpoint to return a generated meal plan
 func mealPlanEndpoint(w http.ResponseWriter, r *http.Request, model *genai.GenerativeModel, ctx context.Context) {
 	// Load schema first to avoid redundant loading
@@ -115,38 +117,15 @@ func mealPlanEndpoint(w http.ResponseWriter, r *http.Request, model *genai.Gener
 	userPrompt := r.URL.Query().Get("prompt")
 	
 	// Create base prompt with specific instructions for valid JSON format
-	basePrompt := `Generate a meal plan in valid JSON format.
-	Follow this JSON structure precisely:
-	{
-		"meals": [
-			{
-				"meal_type": "Breakfast",
-				"name": "Oatmeal with Berries",
-				"calories": 350,
-				"macros": {"carbs": 60, "protein": 8, "fat": 7},
-				"ingredients": ["Oats", "Milk", "Blueberries", "Honey"]
-			},
-			{
-				"meal_type": "Lunch",
-				"name": "Grilled Chicken Salad",
-				"calories": 500,
-				"macros": {"carbs": 20, "protein": 40, "fat": 25},
-				"ingredients": ["Chicken", "Lettuce", "Tomatoes", "Olive Oil"]
-			},
-			{
-				"meal_type": "Dinner",
-				"name": "Salmon with Quinoa",
-				"calories": 600,
-				"macros": {"carbs": 30, "protein": 45, "fat": 35},
-				"ingredients": ["Salmon", "Quinoa", "Spinach", "Lemon"]
-			}
-		]
+
+	data, err := os.ReadFile("prompts/meal_base_prompt.txt")
+	if err != nil {
+		fmt.Println("Error reading file:", err)
+		return
 	}
-	
-	IMPORTANT: Return ONLY the JSON object with no additional text before or after.
-	Ensure all numbers are integers, not floating points.
-	All meal types must be one of: "Breakfast", "Lunch", "Dinner", or "Snack".
-	`
+	content := string(data)
+
+	basePrompt := content
 
 	// Combine user prompt with base prompt if provided
 	fullPrompt := basePrompt
@@ -217,39 +196,56 @@ func workoutPlanEndpoint(w http.ResponseWriter, r *http.Request, model *genai.Ge
 		return
 	}
 
-	// Get user prompt from query parameters
-	userPrompt := r.URL.Query().Get("prompt")
+	// Get prompt content based on request method
+	var userPrompt string
 	
-	// Create base prompt with specific instructions for valid JSON format
-	basePrompt := `Generate a workout plan in valid JSON format.
-	Follow this JSON structure precisely:
-	{
-		"workout_type": str,
-		"duration_minutes": int,
-		"exercises": [
-			{"name": "", "reps":  "sets": },
-			{"name": "", "reps":  "sets": },
-			{"name": "", "reps":  "sets": },
-			{"name": "", "reps":  "sets": }
-		]
+	if r.Method == "POST" {
+		// For POST requests, read the JSON body
+		if r.Header.Get("Content-Type") == "application/json" {
+			// Limit request body size to prevent abuse
+			r.Body = http.MaxBytesReader(w, r.Body, 1048576) // 1MB limit
+			
+			// Parse the JSON request body
+			var requestData map[string]interface{}
+			decoder := json.NewDecoder(r.Body)
+			decoder.DisallowUnknownFields()
+			
+			if err := decoder.Decode(&requestData); err != nil {
+				http.Error(w, fmt.Sprintf("Error parsing JSON request: %v", err), http.StatusBadRequest)
+				return
+			}
+			
+			// Convert the JSON object to a string representation
+			jsonBytes, err := json.Marshal(requestData)
+			if err != nil {
+				http.Error(w, fmt.Sprintf("Error processing request data: %v", err), http.StatusInternalServerError)
+				return
+			}
+			
+			userPrompt = string(jsonBytes)
+			log.Printf("Received workout plan POST request with JSON: %s", userPrompt)
+		} else {
+			http.Error(w, "Content-Type must be application/json for POST requests", http.StatusBadRequest)
+			return
+		}
 	}
-	
-	IMPORTANT: Return ONLY the JSON object with no additional text before or after.
-	Ensure all numbers are integers, not floating points.
-	The workout_type must be one of: "Strength", "Cardio", "Flexibility", or "Mixed".
-	Duration must be at least 10 minutes.
-	Include at least 3 different exercises with appropriate reps and sets.
-	`
 
-	// Combine user prompt with base prompt if provided
+	// Load base prompt from file
+	data, err := os.ReadFile("prompts/work_base_prompt.txt")
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error reading base prompt: %v", err), http.StatusInternalServerError)
+		return
+	}
+	basePrompt := string(data)
+
+	// Combine user input with base prompt if provided
 	fullPrompt := basePrompt
 	if userPrompt != "" {
-		fullPrompt = fmt.Sprintf("Consider the following request: %s\n\n%s", userPrompt, basePrompt)
-		log.Printf("Received workout plan request with custom prompt: %s", userPrompt)
+		fullPrompt = fmt.Sprintf("Consider the following request MAKE SURE YOU ADD A DESCRIPTION: %s\n\n%s", userPrompt, basePrompt)
 	}
 
 	var workoutPlan WorkoutPlan
-	maxRetries := 3
+	maxRetries := 10
 	var validationErrors []string
 
 	// Try up to maxRetries times to get a valid response
@@ -300,6 +296,7 @@ func workoutPlanEndpoint(w http.ResponseWriter, r *http.Request, model *genai.Ge
 	http.Error(w, fmt.Sprintf("Failed to generate valid workout plan after %d attempts. Errors: %s", 
 		maxRetries, strings.Join(validationErrors, "; ")), http.StatusInternalServerError)
 }
+
 
 // Function to validate JSON against a schema
 func validateAgainstSchema(schemaContent string, jsonStr string) (bool, error) {

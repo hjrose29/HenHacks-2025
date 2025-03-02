@@ -7,6 +7,7 @@
         "enum": ["Strength", "Cardio", "Flexibility", "Mixed"]
     },
     "duration_minutes": { "type": "integer", "minimum": 10 },
+    "description":  {"type": "string"},
     "exercises": {
         "type": "array",
         "items": {

@@ -12,6 +12,7 @@
               "enum": ["Breakfast", "Lunch", "Dinner", "Snack"]
             },
             "name": { "type": "string" },
+            "description": {"type": "string"},
             "calories": { "type": "integer" },
             "macros": {
               "type": "object",

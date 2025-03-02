@@ -1,0 +1,83 @@
+{
+  "name": "alex_fitness",
+  "id": 10001,
+  "age": 28,
+  "weight": 75.5,
+  "height": 180.0,
+  "bmr": 1745.0,
+  "fitnessGoal": "Build muscle",
+  "historicalCalories": [
+    {
+      "date": "2025-03-01T10:00:00Z",
+      "caloriesBurned": 450.0,
+      "caloriesConsumed": 2800.0
+    },
+    {
+      "date": "2025-03-02T10:00:00Z",
+      "caloriesBurned": 600.0,
+      "caloriesConsumed": 2950.0
+    },
+    {
+      "date": "2025-03-03T10:00:00Z",
+      "caloriesBurned": 350.0,
+      "caloriesConsumed": 2750.0
+    }
+  ],
+  "historicalActivities": [
+    {
+      "name": "Morning Weight Training",
+      "type": "Strength",
+      "sportType": "Weightlifting",
+      "startDate": "2025-03-01T07:00:00Z",
+      "startDateLocal": "2025-03-01T07:00:00Z",
+      "timezone": "America/New_York",
+      "utcOffset": -18000,
+      "kilojoules": 1500.0,
+      "averageHeartrate": 135.0,
+      "maxHeartrate": 165.0,
+      "sufferScore": 75.0
+    },
+    {
+      "name": "Evening Run",
+      "type": "Run",
+      "sportType": "Running",
+      "startDate": "2025-03-02T18:00:00Z",
+      "startDateLocal": "2025-03-02T18:00:00Z",
+      "timezone": "America/New_York",
+      "utcOffset": -18000,
+      "kilojoules": 2200.0,
+      "averageHeartrate": 155.0,
+      "maxHeartrate": 185.0,
+      "sufferScore": 90.0
+    }
+  ],
+  "historicalMeals": [
+    {
+      "name": "Protein Breakfast",
+      "timestamp": "2025-03-01T08:30:00Z",
+      "macronutrients": { "carbs": 30.0, "protein": 40.0, "fats": 15.0 }
+    },
+    {
+      "name": "Post-Workout Shake",
+      "timestamp": "2025-03-01T09:15:00Z",
+      "macronutrients": { "carbs": 25.0, "protein": 35.0, "fats": 5.0 }
+    },
+    {
+      "name": "Grilled Chicken & Quinoa Bowl",
+      "timestamp": "2025-03-01T13:00:00Z",
+      "macronutrients": { "carbs": 45.0, "protein": 35.0, "fats": 12.0 }
+    }
+  ],
+  "conversationHistory": [
+    {
+      "timestamp": "2025-03-01T06:30:00Z",
+      "message": "What's a good breakfast before weight training?",
+      "response": "I recommend eggs with oatmeal and a banana to provide sustained energy during your workout."
+    },
+    {
+      "timestamp": "2025-03-01T20:00:00Z",
+      "message": "Should I be sore after today's workout?",
+      "response": "Some soreness is normal, especially if you increased weight or tried new exercises. Make sure to get proper rest and consider light stretching."
+    }
+  ]
+}
