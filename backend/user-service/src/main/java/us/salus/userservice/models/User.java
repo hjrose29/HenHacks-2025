@@ -21,12 +21,15 @@ public class User {
     private float weight;
     private float height;
     private float bmr;
+    private TokenResponse token;
     private String fitnessGoal;
     private List<HistoricalCalories> historicalCalories = new ArrayList<>();
     private List<HistoricalActivity> historicalActivities = new ArrayList<>();
     private List<HistoricalMeal> historicalMeals = new ArrayList<>();
     private List<ConversationEntry> conversationHistory = new ArrayList<>();
 
+    public User() {
+    }
 
     public User(long id, String name, int age, float weight, float height, String fitnessGoal) {
         this.id = id;

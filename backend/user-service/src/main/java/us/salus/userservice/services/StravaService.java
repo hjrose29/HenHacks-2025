@@ -7,9 +7,10 @@ import us.salus.userservice.models.Athlete;
 
 @Service
 public class StravaService {
-  private final static RestClient restClient = RestClient.builder().baseUrl("https://www.strava.com/api/v3").build();
 
   public static Athlete getAthlete(String token) {
+    RestClient restClient = RestClient.builder().baseUrl("https://www.strava.com/api/v3").build();
+
     return restClient
         .get()
         .uri("/athlete")
