@@ -28,6 +28,8 @@ public class User {
     private List<ConversationEntry> conversationHistory = new ArrayList<>();
 
 
+    public User() {}
+
     public User(long id, String name, int age, float weight, float height, String fitnessGoal) {
         this.id = id;
         this.name = name;
