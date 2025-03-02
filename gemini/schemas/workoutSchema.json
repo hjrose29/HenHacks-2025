@@ -1,0 +1,24 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+    "workout_type": {
+        "type": "string",
+        "enum": ["Strength", "Cardio", "Flexibility", "Mixed"]
+    },
+    "duration_minutes": { "type": "integer", "minimum": 10 },
+    "exercises": {
+        "type": "array",
+        "items": {
+        "type": "object",
+        "properties": {
+            "name": { "type": "string" },
+            "reps": { "type": "integer" },
+            "sets": { "type": "integer" }
+        },
+        "required": ["name", "reps", "sets"]
+        }
+    }
+    },
+    "required": ["workout_type", "duration_minutes", "exercises"]
+} 
