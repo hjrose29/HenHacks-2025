@@ -1,22 +1,88 @@
+Generate a **valid JSON object** containing a structured workout plan.
 
-Generate a workout plan in valid JSON format based on the above history
-	Follow this JSON structure precisely:
-	{
-		"workout_type": str,
-		"duration_minutes": int,
-		"description": str,
-		"exercises": [
-			{"name": "", "reps":  "sets": },
-			{"name": "", "reps":  "sets": },
-			{"name": "", "reps":  "sets": },
-			{"name": "", "reps":  "sets": }
-		]
-	}
-	
-	IMPORTANT: Return ONLY the JSON object with no additional text before or after.
-	REQUIRED: description field must be a succint description of the workout and give reasoning as to why you are suggesting this.
-	Ensure all numbers are integers, not floating points.
-	The workout_type must be one of: "Strength", "Cardio", "Flexibility", or "Mixed".
-	Duration must be at least 10 minutes.
-	Include at least 3 different exercises with appropriate reps and sets.
-    
+## FOLLOW **EXACTLY** THIS JSON FORMAT:
+{
+  "workout_type": "Strength|Cardio|Flexibility|Mixed",
+  "duration_minutes": int,
+  "description": "string",
+  "exercises": [
+    {"name": "string", "reps": int, "sets": int},
+    {"name": "string", "reps": int, "sets": int},
+    {"name": "string", "reps": int, "sets": int},
+    {"name": "string", "reps": int, "sets": int},
+    {"name": "string", "reps": int, "sets": int}
+  ]
+}
+
+### **🚨 CRITICAL RULES (DO NOT IGNORE ANY FIELD) 🚨**
+1. **THE `description` FIELD IS MANDATORY AND MUST ALWAYS BE PRESENT.**
+   - If `description` is missing, the response is INVALID. **DO NOT OMIT THIS FIELD.**
+   - It must provide a short, meaningful explanation of why this workout is recommended.
+   - Example: `"description": "This cardio session improves endurance and strengthens the heart."`
+2. **Return ONLY valid JSON.** No explanations, no text before or after the JSON.
+3. `"workout_type"` must be one of: `"Strength"`, `"Cardio"`, `"Flexibility"`, or `"Mixed"`.
+4. `"duration_minutes"` must be at least **10 minutes**.
+5. **All numbers must be integers** (no floating points).
+6. **The `exercises` list must contain at least 5 exercises**, with:
+   - `"name"` (required)
+   - `"reps"` (integer, required)
+   - `"sets"` (integer, required)
+7. **If `description` is missing, immediately regenerate the response.**
+8. **The final JSON must STRICTLY follow the example below.**
+
+---
+
+### ✅ **EXAMPLES OF A VALID RESPONSE FOR EACH WORKOUT TYPE:**
+
+```json
+{
+  "workout_type": "Strength",
+  "duration_minutes": 60,
+  "description": "This strength workout is designed to improve muscular endurance and build overall body strength.",
+  "exercises": [
+    {"name": "Barbell Squats", "reps": 8, "sets": 3},
+    {"name": "Deadlifts", "reps": 6, "sets": 3},
+    {"name": "Bench Press", "reps": 10, "sets": 3},
+    {"name": "Overhead Press", "reps": 8, "sets": 3},
+    {"name": "Pull-ups", "reps": 12, "sets": 3}
+  ]
+}
+
+{
+  "workout_type": "Cardio",
+  "duration_minutes": 45,
+  "description": "This cardio session enhances cardiovascular endurance, fat burn, and stamina.",
+  "exercises": [
+    {"name": "Jump Rope", "reps": 100, "sets": 3},
+    {"name": "Running (Intervals)", "reps": 1, "sets": 5},
+    {"name": "Burpees", "reps": 15, "sets": 3},
+    {"name": "Jump Squats", "reps": 20, "sets": 3},
+    {"name": "High Knees", "reps": 30, "sets": 3}
+  ]
+}
+
+{
+  "workout_type": "Flexibility",
+  "duration_minutes": 30,
+  "description": "This flexibility workout improves mobility, reduces muscle stiffness, and enhances recovery.",
+  "exercises": [
+    {"name": "Forward Fold Stretch", "reps": 1, "sets": 2},
+    {"name": "Butterfly Stretch", "reps": 1, "sets": 2},
+    {"name": "Cat-Cow Pose", "reps": 10, "sets": 2},
+    {"name": "Lunging Hip Flexor Stretch", "reps": 1, "sets": 2},
+    {"name": "Seated Spinal Twist", "reps": 1, "sets": 2}
+  ]
+}
+
+{
+  "workout_type": "Mixed",
+  "duration_minutes": 50,
+  "description": "This mixed workout combines strength, cardio, and endurance for full-body conditioning.",
+  "exercises": [
+    {"name": "Kettlebell Swings", "reps": 20, "sets": 3},
+    {"name": "Push-ups", "reps": 15, "sets": 3},
+    {"name": "Jump Rope", "reps": 100, "sets": 3},
+    {"name": "Dumbbell Squats", "reps": 12, "sets": 3},
+    {"name": "Plank Hold", "reps": 60, "sets": 2}
+  ]
+}

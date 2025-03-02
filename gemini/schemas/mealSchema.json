@@ -28,7 +28,7 @@
               "items": { "type": "string" }
             }
           },
-          "required": ["meal_type", "name", "calories", "macros", "ingredients"]
+          "required": ["meal_type", "name", "calories", "macros", "ingredients", "description"]
         }
       }
     },

@@ -9,7 +9,7 @@ import (
 	"os"
 	"regexp"
 	"strings"
-
+	"github.com/gorilla/mux"
 	"github.com/google/generative-ai-go/genai"
 	"github.com/xeipuuv/gojsonschema"
 	"google.golang.org/api/option"
@@ -19,6 +19,7 @@ import (
 type Meal struct {
 	MealType    string   `json:"meal_type"`
 	Name        string   `json:"name"`
+	Description     string     `json:"description"` 
 	Calories    int      `json:"calories"`
 	Macros      Macros   `json:"macros"`
 	Ingredients []string `json:"ingredients"`
@@ -43,6 +44,7 @@ type Exercise struct {
 type WorkoutPlan struct {
 	WorkoutType     string     `json:"workout_type"`
 	DurationMinutes int        `json:"duration_minutes"`
+	Description     string     `json:"description"` 
 	Exercises       []Exercise `json:"exercises"`
 }
 
@@ -84,22 +86,27 @@ func main() {
 	// Define model
 	model := client.GenerativeModel("gemini-1.5-flash")
 	
-	// Configure model for structured output
-	model.SetTemperature(0.2) // Lower temperature for more structured output
-
+	model.SetTemperature(.9)
+	model.SetTopP(0.95)
+	
 	// Define endpoints
-	http.HandleFunc("/meal-plan", func(w http.ResponseWriter, r *http.Request) {
-		mealPlanEndpoint(w, r, model, ctx)
-	})
+	r := mux.NewRouter()
 
-	http.HandleFunc("/workout-plan", func(w http.ResponseWriter, r *http.Request) {
-		workoutPlanEndpoint(w, r, model, ctx)
-	})
+    // Define endpoints
+    r.HandleFunc("/meal-plan", func(w http.ResponseWriter, r *http.Request) {
+        mealPlanEndpoint(w, r, model, ctx)
+    }).Methods("GET", "POST")
 
+    r.HandleFunc("/workout-plan", func(w http.ResponseWriter, r *http.Request) {
+        workoutPlanEndpoint(w, r, model, ctx)
+    }).Methods("GET", "POST")
+
+	r.Use(corsMiddleware)
+	
 	// Start the server
 	port := ":8080"
 	fmt.Printf("Server started at %s\n", port)
-	log.Fatal(http.ListenAndServe(port, nil))
+	log.Fatal(http.ListenAndServe(port, r))
 }
 
 
@@ -289,6 +296,7 @@ func workoutPlanEndpoint(w http.ResponseWriter, r *http.Request, model *genai.Ge
 		// If we got here, we have a valid response
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(workoutPlan)
+		log.Printf(fullPrompt)
 		return
 	}
 
@@ -317,4 +325,22 @@ func validateAgainstSchema(schemaContent string, jsonStr string) (bool, error) {
 	}
 
 	return result.Valid(), nil
+}
+
+// corsMiddleware adds CORS headers to the response
+func corsMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        // Allow requests from localhost:3000
+        w.Header().Set("Access-Control-Allow-Origin", "*")
+        w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+        w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+        w.Header().Set("Access-Control-Allow-Credentials", "true")
+
+        // Handle preflight OPTIONS request
+        if r.Method == http.MethodOptions {
+            return
+        }
+
+        next.ServeHTTP(w, r)
+    })
 }

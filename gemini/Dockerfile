@@ -32,6 +32,7 @@ WORKDIR /root/
 COPY --from=builder /app/fitnessapi .
 
 # Copy schema files
+COPY --from=builder /app/prompts/ ./prompts/
 COPY --from=builder /app/schemas/ ./schemas/
 
 # Expose port 8080
@@ -39,6 +40,7 @@ EXPOSE 8080
 
 # Set environment variable for API key (this will be overridden at runtime)
 ENV GEMINI_API_KEY=""
+ENV FRONTEND_URL="localhost:3000"
 
 # Run the application
 CMD ["./fitnessapi"]
