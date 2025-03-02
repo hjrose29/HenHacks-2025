@@ -43,6 +43,7 @@ declare global {
 		recentWorkouts: Workout[];
 	};
 
+
 	namespace App {
 		// interface Error {}
 		interface Locals {
