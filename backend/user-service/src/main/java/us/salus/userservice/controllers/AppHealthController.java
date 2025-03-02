@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/write")
-public class HealthController {
+public class AppHealthController {
 
     /**
      * Basic health check endpoint that returns current system timestamp.
